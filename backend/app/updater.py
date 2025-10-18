@@ -84,24 +84,23 @@ def _ensure_attrs(node: Any) -> Dict[str, Any]:
 
 
 def _set(node: Any, key: str, value: Any) -> None:
+    """Set a field on dict/model; unknown fields on pydantic models go to attributes."""
     if isinstance(node, dict):
         node[key] = value
-    else:
-        # Only set known attributes on models; unknown must go into `attributes`.
-        try:
-            from pydantic import BaseModel  # optional import
+        return
+    try:
+        from pydantic import BaseModel  # optional import
 
-            if isinstance(node, BaseModel):
-                # pydantic v2: node.model_fields; v1: just try/except setattr
-                fields = getattr(node, "model_fields", None)
-                if isinstance(fields, dict) and key not in fields:
-                    # unknown -> attributes
-                    attrs = _ensure_attrs(node)
-                    attrs[key] = value
-                    return
-        except Exception:
-            pass
-        setattr(node, key, value)
+        if isinstance(node, BaseModel):
+            fields = getattr(node, "model_fields", None)
+            # pydantic v2: model_fields; v1 falls through to setattr try/except
+            if isinstance(fields, dict) and key not in fields:
+                attrs = _ensure_attrs(node)
+                attrs[key] = value
+                return
+    except Exception:
+        pass
+    setattr(node, key, value)
 
 
 def _get(node: Any, key: str, default: Any = None) -> Any:
@@ -174,7 +173,9 @@ def _assign_project_field(prj: Any, field_path: str, value: Any) -> bool:
       - team_size   -> int
       - period      -> str
       - impact      -> dict or partial (impact.delta etc.)
-    Everything else (unknown keys, including 'ownership'/'collaboration') goes under `attributes`.
+      - ownership   -> str (and mirrored to attributes)
+      - collaboration -> str (and mirrored to attributes)
+    Everything else (unknown keys) goes under `attributes` preserving nesting.
     """
     parts = [p for p in (field_path or "").split(".") if p]
     if not parts:
@@ -210,6 +211,14 @@ def _assign_project_field(prj: Any, field_path: str, value: Any) -> bool:
                 cur.update(value)
         else:
             cur["details"] = str(value)
+        return True
+
+    if head in {"ownership", "collaboration"}:
+        # Set on core (if field exists; otherwise _set will route unknown to attributes)
+        _set(prj, head, str(value))
+        # Always mirror to attributes for audit/history
+        attrs = _ensure_attrs(prj)
+        attrs[head] = str(value)
         return True
 
     # Unknown → attributes (nested path preserved)
@@ -248,7 +257,6 @@ def _assign_skill_field(sk: Any, field_path: str, value: Any) -> bool:
             xs = str(x).strip()
             if xs:
                 inc.append(xs)
-        # keep order, dedupe
         merged = list(dict.fromkeys(cur + inc))
         _set(sk, "evidence", merged)
         return True

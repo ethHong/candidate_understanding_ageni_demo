@@ -4,6 +4,20 @@ from pydantic import BaseModel, Field, field_validator
 
 
 # ---------- Core profile structures ----------
+# Provide a "LooseModel" that allows unknown fields (pydantic v2 and v1 compatible)
+try:
+    # pydantic v2
+    from pydantic import ConfigDict
+
+    class LooseModel(BaseModel):
+        # Allow extra keys without raising; they can be read/written if needed
+        model_config = ConfigDict(extra="allow")
+
+except Exception:
+    # pydantic v1 fallback
+    class LooseModel(BaseModel):
+        class Config:
+            extra = "allow"
 
 
 class CoreInfo(BaseModel):
@@ -32,17 +46,31 @@ class Impact(BaseModel):
     details: Optional[str] = None
 
 
-class Project(BaseModel):
+# In schemas.py — replace the Project class with this definition.
+
+from typing import List, Optional, Dict, Any
+from pydantic import Field
+
+
+class Project(LooseModel):
+    """Project entity with loose extra-field policy.
+    Known/core fields live here; everything else may live under `attributes`.
+    """
+
     title: str
     role: Optional[str] = None
-    period: Optional[str] = None
     company: Optional[str] = None
-    stack: List[str] = []
-    actions: List[str] = []
-    impact: Optional[Impact] = None
+    period: Optional[str] = None
     team_size: Optional[int] = None
-    confidence: float = 0.55
+    stack: List[str] = Field(default_factory=list)
+    impact: Dict[str, Any] = Field(default_factory=dict)
+    actions: List[str] = Field(default_factory=list)
+    confidence: Optional[float] = None
     attributes: Dict[str, Any] = Field(default_factory=dict)
+
+    # Core mirrors for frequently used free-form keys
+    ownership: Optional[str] = None
+    collaboration: Optional[str] = None
 
 
 class Competencies(BaseModel):
