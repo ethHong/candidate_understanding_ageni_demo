@@ -1,0 +1,33 @@
+version: 1
+job_family: general
+
+skill_depth:
+  - "Hands-on vs. leading: what did you personally build/operate?"
+  - "Recency (YYYY-MM) and frequency (daily/weekly/monthly)."
+  - "Frameworks/libraries/tools and why they were chosen."
+  - "Scale/complexity (rows/GB/users/latency) and bottlenecks handled."
+  - "Debugging/optimization stories that show depth."
+
+project_impact:
+  - "Metric + baseline → delta (percent/time/money/quality/volume)."
+  - "Evaluation method (A/B, backtest, benchmarks) and sample size."
+  - "Business/user outcome in plain language."
+  - "Scope (stakeholders, users, revenue, datasets)."
+  - "Repeatability/automation that sustained the impact."
+
+ownership:
+  - "What was owned end-to-end? Calls/decisions made by you."
+  - "Handoffs/collaboration; stakeholders managed."
+  - "Reliability/maintenance, post-release iteration."
+
+stack_details:
+  - "Concrete tools/services and where each fits in the workflow."
+  - "Interfacing systems (DBs, warehouses, APIs, schedulers, infra)."
+
+skill_recency:
+  - "When last used (YYYY-MM) and how often currently."
+  - "In which project/context; recency vs. seniority trade-offs."
+
+target_role:
+  - "Target roles and strengths mapped to them."
+  - "Role-fit narrative: top 2–3 proof points for that role."

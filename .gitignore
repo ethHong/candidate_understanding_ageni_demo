@@ -1,0 +1,60 @@
+# OS / Misc
+.DS_Store
+Thumbs.db
+__MACOSX/
+
+# Python bytecode / caches
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.dylib
+*.egg
+*.egg-info/
+.eggs/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+.python-version
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# Editors / IDE
+.vscode/
+.idea/
+
+# Env & secrets
+backend/app/.env
+*.env
+!.env.example
+
+# Local databases / state
+*.db
+*.sqlite
+*.sqlite3
+comes.db
+backend/app/comes.db
+.last_sid
+
+# Vector stores / embeddings (Chroma) & RAG artifacts
+.rag/
+backend/.rag/
+
+# Logs
+*.log
+
+# Builds / dists (if ever used)
+build/
+dist/
+
+# local overrides & secrets
+.env.local
+secrets/
+*.key
+*_key.txt

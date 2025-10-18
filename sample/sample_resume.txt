@@ -1,0 +1,9 @@
+ETHAN HONG — Product Manager / Data Analytics
+
+Experience
+- Product Manager, Hyperconnect — Led analytics projects; launched dashboarding with SQL + Tableau; designed A/B test metrics; collaborated with data engineers.
+- Research Assistant, UCLA — Built data pipeline in Python; basic PySpark transforms; no deep learning.
+
+Projects
+- Built Interview Prep Assistant; improved engagement by 20%.
+- Designed experimentation framework; weekly analysis in SQL and Python.
